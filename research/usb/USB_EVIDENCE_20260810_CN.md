@@ -16,6 +16,9 @@
 | R5B | `/U/` | PFTP GET 目录 | PASS | 21 | 2 条目 |
 | R5C | `/U/0/` | PFTP GET 目录 | PASS | 183 | 14 条目 |
 | R5D | `/U/0/<日期>/` | PFTP GET 目录 | PASS | 30 | 2 条目 |
+| R5E | `/U/0/<日期>/SKINTEMP/` | PFTP GET 目录 | STOP | — | error 103: NO_SUCH_FILE_OR_DIRECTORY |
+| R5F | `/U/0/<日期>/` | PFTP GET 目录 | STOP | — | error 103: NO_SUCH_FILE_OR_DIRECTORY |
+| R5G | `/U/0/` | PFTP GET 目录 | PASS | 183 | 14 条目 |
 
 ## 已验证的 Transport
 
@@ -36,7 +39,17 @@
 14 条目：日期目录、`AUTOS/`、`DGOAL/`、`NR/`、`SLEEP/`、`SLPRRSTD.BIN`、`SPROF/`、`S/`、`TL/`、`USERID.BPB`
 
 ### `/U/0/<日期>/`
-2 条目：`SKINCONT/`、`SKINTEMP/`
+早期 research window 中：2 条目 — `SKINCONT/`、`SKINTEMP/`。在后来的独立 window 中，同一日期路径返回 PFTP error 103（NO_SUCH_FILE_OR_DIRECTORY）；随后 `/U/0/` 重新 listing 显示该日期条目已离开目录索引，而较新的日期条目已出现。非日期条目在所有观察中保持不变。
+
+## 日期目录生命周期（未解决）
+
+**R5E (STOP)：** 直接 GET `/U/0/<较早日期>/SKINTEMP/` 返回 PFTP error 103。transport 和 request framing 均已验证正确；仅发送一次 GET。
+
+**R5F (STOP)：** 父路径 `/U/0/<较早日期>/` 同样返回 PFTP error 103。未获取 parent listing。
+
+**R5G (PASS)：** 重新 listing `/U/0/` 确认较早日期条目已不在索引中，较晚日期条目已出现。所有非日期条目未变。
+
+**状态：** `/U/0/` 下日期状目录索引表现出动态成员关系。较早目录从索引中消失与其路径变为不可达在时序上相关。保留/生命周期机制仍未解决，不声称任何特定机制（rotation、consumption、cleanup、FIFO）已确认。
 
 ## 维持的安全不变量
 

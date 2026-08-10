@@ -15,14 +15,16 @@
 - stale local `RUNNING` session 恢复为 `INTERRUPTED_RESTART`；
 - Java 21 direct compile/test/lint/assemble validation PASS。
 
-## USB 研究线 — R5D
+## USB 研究线 — R5G
 
 **2026-08-10 已验证：**
 
 - software-gated Windows USB enumeration；
 - `VID_0DA4:PID_0014` CDC ACM interface 绑定 `usbser`；
 - Polar PFTP 通过 USB 完成实机只读 `GET /DEVICE.BPB`；
-- `/`、`/U/`、`/U/0/`、`/U/0/<日期>/` 完成受控 single-level directory listing；
+- `/`、`/U/`、`/U/0/`、`/U/0/<日期>/` 完成受控 single-level directory listing（早期 window）；
+- R5E + R5F：在较早日期路径及子目录上返回有效 PFTP error 103（NO_SUCH_FILE_OR_DIRECTORY），transport 已验证；
+- R5G：`/U/0/` 重新 listing 确认日期索引成员已变——较早日期已不在，较晚日期已出现，非日期条目未变；
 - 无 firmware operation、无 device-file mutation。
 
 详细证据：[`../research/usb/USB_EVIDENCE_20260810_CN.md`](../research/usb/USB_EVIDENCE_20260810_CN.md)

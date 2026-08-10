@@ -42,7 +42,9 @@ This verifies the tested JOJI path and device state; it does not imply that ever
 
 **Verified.** A fixed read-only Polar PFTP `GET /DEVICE.BPB` request succeeded over the CDC ACM serial transport at 115200 8N1 with RTS/CTS. The returned protobuf matched the tested Loop Gen 2 model and firmware family. Public documentation omits the personal device ID and other user-specific identifiers.
 
-**Verified — bounded filesystem mapping.** Directory-only PFTP reads succeeded for `/`, `/U/`, `/U/0/`, and `/U/0/<date>/`. The `/U/0/` listing included date-shaped directories plus `AUTOS/`, `DGOAL/`, `NR/`, `SLEEP/`, `SPROF/`, `S/`, `TL/` and user-related metadata entries. A single daily directory listing confirmed `SKINCONT/` and `SKINTEMP/` subdirectories. Public documentation intentionally does not publish user-specific date names or identifiers.
+**Verified — bounded filesystem mapping.** Directory-only PFTP reads succeeded for `/`, `/U/`, `/U/0/`, and `/U/0/<date>/` (in an earlier research window). A single daily directory listing confirmed `SKINCONT/` and `SKINTEMP/` subdirectories. In a later independent research window, the same `<date>/` path and its `SKINTEMP/` child each returned PFTP error 103 (NO_SUCH_FILE_OR_DIRECTORY) despite validated transport and request framing. A subsequent `/U/0/` re-listing confirmed that the earlier date entry was absent from the index while a later date entry had appeared. All observed non-date entries remained unchanged. Public documentation intentionally does not publish user-specific date names or identifiers.
+
+**Observation.** Date-shaped directory entries under `/U/0/` exhibit dynamic index membership. The disappearance of an earlier date entry from the index is temporally correlated with that path returning PFTP error 103. The retention and lifecycle mechanism remains unresolved.
 
 **Observation.** The Windows USB bus descriptor product string and the internal `DEVICE.BPB` model name are different identifiers. JOJI treats them as separate descriptor/model layers rather than assuming they are interchangeable.
 

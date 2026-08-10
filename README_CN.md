@@ -1,4 +1,4 @@
-<!-- JOJI Polar Bridge V5-B1 / USB-R5D — updated 2026-08-10 -->
+<!-- JOJI Polar Bridge V5-B1 / USB-R5G — updated 2026-08-11 -->
 <div align="center">
   <img src="assets/hero.svg" alt="JOJI Polar Bridge" width="100%" />
 

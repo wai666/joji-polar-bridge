@@ -16,6 +16,9 @@
 | R5B | `/U/` | PFTP GET directory | PASS | 21 | 2 entries |
 | R5C | `/U/0/` | PFTP GET directory | PASS | 183 | 14 entries |
 | R5D | `/U/0/<date>/` | PFTP GET directory | PASS | 30 | 2 entries |
+| R5E | `/U/0/<date>/SKINTEMP/` | PFTP GET directory | STOP | — | error 103: NO_SUCH_FILE_OR_DIRECTORY |
+| R5F | `/U/0/<date>/` | PFTP GET directory | STOP | — | error 103: NO_SUCH_FILE_OR_DIRECTORY |
+| R5G | `/U/0/` | PFTP GET directory | PASS | 183 | 14 entries |
 
 ## Transport verified
 
@@ -36,7 +39,17 @@
 14 entries: date-shaped directories, `AUTOS/`, `DGOAL/`, `NR/`, `SLEEP/`, `SLPRRSTD.BIN`, `SPROF/`, `S/`, `TL/`, `USERID.BPB`
 
 ### `/U/0/<date>/`
-2 entries: `SKINCONT/`, `SKINTEMP/`
+In an earlier research window: 2 entries — `SKINCONT/`, `SKINTEMP/`. In a later independent window, the same date path returned PFTP error 103 (NO_SUCH_FILE_OR_DIRECTORY), and a subsequent `/U/0/` re-listing showed that the earlier date entry had left the directory index while a later date entry had appeared. Non-date entries remained unchanged across observations.
+
+## Date-shaped directory lifecycle (unresolved)
+
+**R5E (STOP):** a direct GET of `/U/0/<earlier-date>/SKINTEMP/` returned PFTP error 103. Transport and request framing were validated; exactly one GET was sent.
+
+**R5F (STOP):** the parent path `/U/0/<earlier-date>/` also returned PFTP error 103. No parent listing was obtained.
+
+**R5G (PASS):** a re-listing of `/U/0/` confirmed that the earlier date entry was absent while a later date entry was present. All non-date entries were unchanged.
+
+**Status:** the date-shaped directory index under `/U/0/` exhibits dynamic membership. The earlier directory's disappearance from the index correlates with its path becoming unreachable. The retention/lifecycle mechanism remains unresolved and no specific mechanism (rotation, consumption, cleanup, FIFO) is claimed as confirmed.
 
 ## Safety invariants maintained
 

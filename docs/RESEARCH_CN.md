@@ -42,7 +42,9 @@
 
 **Verified / 已验证。** 通过 CDC ACM serial transport，以 115200 8N1 + RTS/CTS 执行固定只读 Polar PFTP `GET /DEVICE.BPB` 成功，返回 protobuf 与当前测试 Loop Gen 2 的固件/型号系列一致。公开仓库不发布个人 device ID 等用户标识。
 
-**Verified / 已验证 — 受控 filesystem mapping。** 仅使用 directory listing 的 PFTP read，已经成功确认 `/`、`/U/`、`/U/0/`、`/U/0/<日期>/`。`/U/0/` 中观察到 date-shaped directories，以及 `AUTOS/`、`DGOAL/`、`NR/`、`SLEEP/`、`SPROF/`、`S/`、`TL/` 和用户 metadata 条目。单个每日目录 listing 确认了 `SKINCONT/` 和 `SKINTEMP/` 子目录。公开文档不会发布用户专属日期名或标识。
+**Verified / 已验证 — 受控 filesystem mapping。** 仅使用 directory listing 的 PFTP read，已经成功确认 `/`、`/U/`、`/U/0/`、`/U/0/<日期>/`（早期 research window 中）。单个每日目录 listing 确认了 `SKINCONT/` 和 `SKINTEMP/` 子目录。在后来的独立 research window 中，同一 `<日期>/` 路径及其 `SKINTEMP/` 子目录分别返回 PFTP error 103（NO_SUCH_FILE_OR_DIRECTORY），尽管 transport 和 request framing 均已验证正确。随后 `/U/0/` 重新 listing 确认较早日期条目已从索引中消失，较晚日期条目已出现。所有观察到的非日期条目保持不变。公开文档不会发布用户专属日期名或标识。
+
+**Observation / 观察。** `/U/0/` 下日期状目录条目表现出动态索引成员关系。较早日期条目从索引中消失与其路径返回 PFTP error 103 在时序上相关。保留/生命周期机制仍未解决。
 
 **Observation / 观察。** Windows USB bus descriptor product string 与 `DEVICE.BPB` 内部 model name 是不同层级的标识。JOJI 将其分别记录，不再假设二者可互换。
 
