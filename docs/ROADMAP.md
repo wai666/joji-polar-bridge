@@ -3,20 +3,33 @@
 **English** · [简体中文](ROADMAP_CN.md)
 
 > [!NOTE]
-> Items below are **planned work**, not claims that the features already exist or have been validated.
+> Completed items below are explicitly marked **Verified**. Unmarked future items remain planned work.
 
-## V5-B1 — RAW inventory resilience + differential index
+## V5-B1 — historical coverage protection + restart recovery
 
-Planned:
+**Verified 2026-08-10:**
 
-- stage-local retry/recovery for transient inventory parse failures;
-- persistent file observation metadata;
-- change-frequency ranking by device path;
-- size/hash/version timelines;
-- correlation between RAW change events and semantic API changes;
-- no expansion of device write capability.
+- persisted HR semantic versions are aggregated by stable group key;
+- richer historical payloads prevent sparse latest-payload coverage regression;
+- contributing payload SHA-256 values form the selected source fingerprint;
+- stale local `RUNNING` sessions recover as `INTERRUPTED_RESTART`;
+- direct Java 21 compile/test/lint/assemble validation is PASS.
+
+## USB research track — R5C
+
+**Verified 2026-08-10:**
+
+- software-gated Windows USB enumeration;
+- `VID_0DA4:PID_0014` CDC ACM interface bound to `usbser`;
+- Polar PFTP real-device read-only `GET /DEVICE.BPB` over USB;
+- bounded single-level directory listings for `/`, `/U/`, `/U/0/`;
+- no firmware operation and no device-file mutation.
+
+Next USB work remains fixed-path, non-recursive and read-only unless a new safety gate is reviewed.
 
 ## V5-B — longitudinal analytics
+
+Planned:
 
 - 7 / 30 / 90-day trend windows;
 - activity, sleep, HR, skin-temperature and PPI variability trends;
@@ -24,6 +37,8 @@ Planned:
 - transparent baseline estimation.
 
 ## V5-C — explainable health intelligence
+
+Planned:
 
 - baseline-relative alerts;
 - explicit data-quality gates;

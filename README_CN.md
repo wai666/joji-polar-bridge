@@ -1,4 +1,4 @@
-<!-- JOJI Polar Bridge V5-A3 — published 2026-08-10 -->
+<!-- JOJI Polar Bridge V5-B1 / USB-R5C — updated 2026-08-10 -->
 <div align="center">
   <img src="assets/hero.svg" alt="JOJI Polar Bridge" width="100%" />
 
@@ -13,9 +13,10 @@
   ![Platform](https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white)
   ![SDK](https://img.shields.io/badge/Polar%20BLE%20SDK-8.1.0-00A6CE)
   ![Database](https://img.shields.io/badge/storage-SQLite%20schema%20v2-0f80cc)
-  ![Derived](https://img.shields.io/badge/derived-A3.D1-7c5cff)
-  ![Safety](https://img.shields.io/badge/device%20writes-0-success)
-  ![Status](https://img.shields.io/badge/V5--A3-sealed%20pass-2ea44f)
+  ![Derived](https://img.shields.io/badge/derived-A3.D2-7c5cff)
+  ![USB](https://img.shields.io/badge/USB-CDC%20ACM%20%2B%20PFTP-00A6CE)
+  ![Safety](https://img.shields.io/badge/device%20writes-reviewed%20USB%20gate-f0ad4e)
+  ![Status](https://img.shields.io/badge/V5--B1-verified-2ea44f)
 </div>
 
 ---
@@ -47,9 +48,9 @@
 
 研究类内容的详细批注见 [`docs/RESEARCH_CN.md`](docs/RESEARCH_CN.md)。
 
-## 当前里程碑 — V5-A3
+## 当前里程碑 — V5-B1 / A3.D2
 
-**Verified / 已验证（仅限本项目验证范围）：** 当前封存里程碑为 **V5-A3 / A3.D1**。
+**Verified / 已验证（仅限本项目验证范围）：** 当前已验证的 host build / offline processing 里程碑为 **V5-B1 / A3.D2**。
 
 | 项目 | 状态 | 范围 / 说明 |
 |---|---:|---|
@@ -57,16 +58,20 @@
 | 本地持久化 | ✅ PASS | SQLite + 应用私有 RAW 归档 |
 | Schema 迁移 | ✅ PASS | 显式 `v1 → v2` 迁移 |
 | 增量同步 / 去重 | ✅ PASS | logical key + payload SHA-256 |
-| Derived 版本化 | ✅ PASS | algorithm version + source fingerprint |
+| Derived 版本化 | ✅ PASS | A3.D2 source aggregation + algorithm version + source fingerprint |
+| 历史 HR coverage 保护 | ✅ PASS | richer persisted HR groups 防止 sparse latest payload 造成 coverage regression |
+| Restart recovery | ✅ PASS | stale local `RUNNING` session 转为 `INTERRUPTED_RESTART` |
 | 手动重算幂等性 | ✅ PASS | 输入未变时去重，不创建新记录 |
 | 安全释放 | ✅ PASS | 已验证成功会话以 callback-confirmed disconnect 结束 |
-| 持久设备写入 | **0** | 项目策略禁止 mutation API |
+| USB software gate | ✅ PASS | 受控 ON/OFF 设置实验，带即时 readback 与 OFF restore |
+| USB transport | ✅ PASS | Windows CDC ACM / `usbser` + 实机 PFTP 只读 GET 已验证 |
+| 设备侧 mutation 范围 | restricted | 仅执行过经审核、可逆的 USB connection-mode gate；文件/固件 mutation 仍禁止 |
 | 已知瞬态问题 | ⚠️ tracked | 实机 evidence 中出现过 RAW inventory protobuf 瞬时解析失败 |
 
 项目记录的最新封存 APK SHA-256：
 
 ```text
-b978ed1ceade315586b6c298eefa66b2912d677292af47021dcc3d33141672c7
+baa9e3c42a7bc6fbcadcf5af92755d75443e3b2f35774e915be4c7685a264b97
 ```
 
 详细验证状态：[`docs/BUILD_STATUS.md`](docs/BUILD_STATUS.md)
@@ -78,7 +83,7 @@ flowchart LR
     Loop[Polar Loop Gen 2] -->|BLE / SDK| SDK[Polar BLE SDK 8.1.0]
     SDK --> RAW[L0 · Evidence\nRAW + original SDK payload]
     RAW --> CAN[L1 · Canonical\nsource priority + freshness]
-    CAN --> DER[L2 · Derived\nA3.D1 versioned metrics]
+    CAN --> DER[L2 · Derived\nA3.D2 versioned metrics]
     DER --> UI[L3 · Presentation\ndashboard · history · trends]
 
     RAW --> ARCH[(Content-addressed archive)]
@@ -98,6 +103,19 @@ flowchart LR
 更多：[`docs/ARCHITECTURE_CN.md`](docs/ARCHITECTURE_CN.md)
 
 ## 实机验证重点
+
+### Verified / 已验证 — USB software gate 与 transport
+
+受控实机实验已经确认 SDK 暴露的 USB connection setting 与 Windows 枚举存在可逆关系：
+
+```text
+USB mode ON  -> Windows 枚举 VID_0DA4:PID_0014，并出现 CDC ACM 串行接口
+USB mode OFF -> Windows USB host 不再枚举该设备
+```
+
+Windows 将接口绑定到系统 `usbser` 驱动。随后在 CDC ACM transport 上执行一次固定路径、只读的 PFTP `GET /DEVICE.BPB` 成功，并返回有效 Polar device-info protobuf，与当前测试 Loop Gen 2 的型号/固件系列一致。
+
+之后又以单层、非递归方式完成 `/`、`/U/`、`/U/0/` 的目录 listing。公开文档不写入个人 device ID、serial 或用户专属日期路径。
 
 ### Verified / 已验证 — 重算幂等性
 
@@ -144,6 +162,8 @@ duplicate=3
 - 读取 SDK 支持的健康/历史 API；
 - 启停已批准的 online PMD streams；
 - 仅通过审核过的 whitelist 做只读文件获取；
+- 在明确 research gate 中，对固定路径执行经审核的 USB PFTP 只读请求；
+- 仅在可逆受控实验中切换 SDK USB connection-mode setting，并要求 pre-read、即时 readback 与 OFF restore；
 - 在本地归档和处理数据。
 
 禁止：
@@ -155,7 +175,7 @@ duplicate=3
 - 启用 SDK mode；
 - 修改 offline recording；
 - 启动 ECG；
-- 任何持久设备 mutation。
+- reviewed USB connection-mode gate 之外的任意持久设备 mutation。
 
 详见 [`docs/SAFETY_CN.md`](docs/SAFETY_CN.md)。
 
@@ -167,19 +187,27 @@ duplicate=3
 
 详见 [`docs/RESEARCH_CN.md`](docs/RESEARCH_CN.md)。
 
+### Verified / 已验证 — USB 研究结论
+
+当前测试设备存在 software-gated USB data path。启用后 Windows 观察到 `VID_0DA4:PID_0014` composite device，其中唯一已观察到的接口为绑定 `usbser` 的 CDC ACM。实机已验证 Polar PFTP framing 可运行在该 serial transport 上，并成功执行固定只读 `GET /DEVICE.BPB`；随后仅以目录 listing 方式逐层确认 `/`、`/U/`、`/U/0/`。
+
+USB bus descriptor 的 product string 与 `DEVICE.BPB` 内部 model name 属于不同层级标识，文档明确区分，不再混用。
+
 ## 路线图
 
 ```text
 V5-A3   ✅ 版本化 Derived 层 + 本地研究索引
   ↓
-V5-B1   ◉ RAW inventory 韧性 + 差分研究索引
+V5-B1   ✅ A3.D2 历史 coverage 保护 + restart recovery + verified build
+  ↓
+USB-R5C ✅ Software gate + CDC ACM + PFTP + 受控只读目录映射
   ↓
 V5-B    ○ 7 / 30 / 90 天分析 + 个人基线
   ↓
 V5-C    ○ 可解释基线告警 / 健康智能
 ```
 
-下一步重点：让 RAW inventory 失败做到**阶段隔离且可恢复**，再关联 RAW 路径变化与语义变化，而不是盲目扩大设备访问范围。
+下一步重点：只在能直接提升语义理解时继续受控只读 evidence 收集，同时推进 V5-B 长期趋势分析。USB 工作继续保持 fixed-path、non-recursive、mutation-restricted。
 
 详见 [`docs/ROADMAP_CN.md`](docs/ROADMAP_CN.md)。
 

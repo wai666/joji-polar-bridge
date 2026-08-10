@@ -30,22 +30,20 @@
 > [!IMPORTANT]
 > 上述生命周期解释来自 JOJI 当前 evidence，属于研究假设。它**不是**对 Polar 未公开协议的官方断言，也不保证跨设备、firmware 或 Flow 版本成立。
 
-## 当前待研究的瞬态问题
+## RAW inventory 瞬态问题
 
 **Observation / 观察。** A3 evidence 捕获过一次 RAW inventory protobuf 解析错误：`invalid tag (zero)`；后续运行又成功。
 
-**Hypothesis / 假设。** 该故障更可能是瞬态或阶段局部问题，而不能据此断定底层数据永久不可读。
-
-**计划验证：**
-
-- 将 inventory 失败限制在本阶段；
-- 保留此前已提交的本地数据；
-- 不重新执行无关的已完成工作；
-- 明确记录 retry / recovery evidence；
-- 长期关联 RAW path 的变化。
+**Policy / 策略。** 本地 processing / recovery 应把此类故障限制在对应 stage，保留此前已经提交的数据，并明确记录 retry/recovery evidence。
 
 ## USB 研究分支
 
-**Policy / 策略。** PC-USB 分支继续坚持 passive-first。公开研究在考虑任何协议操作前，只做 enumeration / interface 层面的检查。
+**Verified / 已验证（仅限当前测试设备与已记录 session）。** SDK 暴露的 USB connection setting 会作为 Windows host 枚举的软件 gate。setting ON 时，Windows 枚举出 `VID_0DA4:PID_0014` composite USB device，并观察到一个绑定系统 `usbser` 的 CDC ACM 接口；恢复 OFF 后该枚举消失。
 
-当前计划明确排除 hidden mode activation、driver replacement、DFU 和 vendor-command 实验。
+**Verified / 已验证。** 通过 CDC ACM serial transport，以 115200 8N1 + RTS/CTS 执行固定只读 Polar PFTP `GET /DEVICE.BPB` 成功，返回 protobuf 与当前测试 Loop Gen 2 的固件/型号系列一致。公开仓库不发布个人 device ID 等用户标识。
+
+**Verified / 已验证 — 受控 filesystem mapping。** 仅使用 directory listing 的 PFTP read，已经成功确认 `/`、`/U/`、`/U/0/`。`/U/0/` 中观察到 date-shaped directories，以及 `AUTOS/`、`DGOAL/`、`NR/`、`SLEEP/`、`SPROF/`、`S/`、`TL/` 和用户 metadata 条目。公开文档不会发布用户专属日期名或标识。
+
+**Observation / 观察。** Windows USB bus descriptor product string 与 `DEVICE.BPB` 内部 model name 是不同层级的标识。JOJI 将其分别记录，不再假设二者可互换。
+
+**Policy / 策略。** USB 工作默认继续保持 fixed-path + read-only。未经过新的 reviewed gate，不允许目录递归、任意文件读取、driver replacement、DFU、firmware write、raw vendor-command exploration 或 device-file mutation。本分支唯一实际执行过的 device-side setting mutation 是专用、可逆的 USB connection-mode toggle，并要求 pre-read、即时 readback 与 OFF restore。

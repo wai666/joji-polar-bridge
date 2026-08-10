@@ -1,4 +1,4 @@
-<!-- JOJI Polar Bridge V5-A3 — published 2026-08-10 -->
+<!-- JOJI Polar Bridge V5-B1 / USB-R5C — updated 2026-08-10 -->
 <div align="center">
   <img src="assets/hero.svg" alt="JOJI Polar Bridge" width="100%" />
 
@@ -13,9 +13,10 @@
   ![Platform](https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white)
   ![SDK](https://img.shields.io/badge/Polar%20BLE%20SDK-8.1.0-00A6CE)
   ![Database](https://img.shields.io/badge/storage-SQLite%20schema%20v2-0f80cc)
-  ![Derived](https://img.shields.io/badge/derived-A3.D1-7c5cff)
-  ![Safety](https://img.shields.io/badge/device%20writes-0-success)
-  ![Status](https://img.shields.io/badge/V5--A3-sealed%20pass-2ea44f)
+  ![Derived](https://img.shields.io/badge/derived-A3.D2-7c5cff)
+  ![USB](https://img.shields.io/badge/USB-CDC%20ACM%20%2B%20PFTP-00A6CE)
+  ![Safety](https://img.shields.io/badge/device%20writes-reviewed%20USB%20gate-f0ad4e)
+  ![Status](https://img.shields.io/badge/V5--B1-verified-2ea44f)
 </div>
 
 ---
@@ -47,9 +48,9 @@ Technical statements use explicit scope labels:
 
 See [`docs/RESEARCH.md`](docs/RESEARCH.md) for the research-specific annotations.
 
-## Current milestone — V5-A3
+## Current milestone — V5-B1 / A3.D2
 
-**Verified — project validation scope:** V5-A3 / A3.D1 is the current sealed project milestone.
+**Verified — project validation scope:** V5-B1 / A3.D2 is the current verified host-build and offline-processing milestone.
 
 | Area | Status | Scope / notes |
 |---|---:|---|
@@ -57,16 +58,20 @@ See [`docs/RESEARCH.md`](docs/RESEARCH.md) for the research-specific annotations
 | Local persistence | ✅ PASS | SQLite + app-private RAW archive |
 | Schema migration | ✅ PASS | explicit `v1 → v2` migration |
 | Incremental sync / dedup | ✅ PASS | logical key + payload SHA-256 |
-| Derived versioning | ✅ PASS | algorithm version + source fingerprint |
+| Derived versioning | ✅ PASS | A3.D2 source aggregation + algorithm version + source fingerprint |
+| Historical HR coverage protection | ✅ PASS | richer persisted HR groups prevent sparse latest-payload regression |
+| Restart recovery | ✅ PASS | stale local `RUNNING` sessions become `INTERRUPTED_RESTART` |
 | Manual recompute idempotency | ✅ PASS | unchanged inputs deduplicate instead of creating new rows |
 | Safe release | ✅ PASS | successful validated sessions end with callback-confirmed disconnect |
-| Persistent device writes | **0** | mutation APIs remain forbidden by project policy |
+| USB software gate | ✅ PASS | controlled ON/OFF setting experiment with immediate readback and OFF restore |
+| USB transport | ✅ PASS | Windows CDC ACM / `usbser` + real-device PFTP read-only GET verified |
+| Device-side mutation scope | restricted | only the reviewed reversible USB connection-mode gate has been exercised; file/firmware mutation remains forbidden |
 | Known transient | ⚠️ tracked | RAW inventory protobuf parsing has failed transiently in recorded evidence |
 
 Latest sealed APK SHA-256 recorded by the project:
 
 ```text
-b978ed1ceade315586b6c298eefa66b2912d677292af47021dcc3d33141672c7
+baa9e3c42a7bc6fbcadcf5af92755d75443e3b2f35774e915be4c7685a264b97
 ```
 
 Detailed validation status: [`docs/BUILD_STATUS.md`](docs/BUILD_STATUS.md)
@@ -78,7 +83,7 @@ flowchart LR
     Loop[Polar Loop Gen 2] -->|BLE / SDK| SDK[Polar BLE SDK 8.1.0]
     SDK --> RAW[L0 · Evidence\nRAW + original SDK payload]
     RAW --> CAN[L1 · Canonical\nsource priority + freshness]
-    CAN --> DER[L2 · Derived\nA3.D1 versioned metrics]
+    CAN --> DER[L2 · Derived\nA3.D2 versioned metrics]
     DER --> UI[L3 · Presentation\ndashboard · history · trends]
 
     RAW --> ARCH[(Content-addressed archive)]
@@ -104,6 +109,19 @@ flowchart LR
 More detail: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
 ## Real-device validation highlights
+
+### Verified — USB software gate and transport
+
+Controlled real-device testing established a reversible relationship between the SDK-exposed USB connection setting and Windows enumeration:
+
+```text
+USB mode ON  -> VID_0DA4:PID_0014 enumerates and exposes a CDC ACM serial interface
+USB mode OFF -> the device no longer enumerates on the Windows USB host
+```
+
+Windows bound the interface to the built-in `usbser` driver. A single fixed read-only PFTP `GET /DEVICE.BPB` request over the CDC ACM transport succeeded and returned a valid Polar device-info protobuf matching the tested Loop Gen 2 model and firmware family.
+
+Subsequent read-only directory listings verified the PFTP filesystem path hierarchy through `/`, `/U/`, and `/U/0/` without recursive enumeration or device-file mutation. Public documentation intentionally omits personal device identifiers and user-specific date paths.
 
 ### Verified — recompute idempotency
 
@@ -153,6 +171,8 @@ Current project work includes:
 - read supported SDK health/history APIs;
 - start/stop approved online PMD streams;
 - perform reviewed read-only file retrieval through the existing whitelist;
+- perform narrowly reviewed USB PFTP read-only requests on fixed paths during a controlled research gate;
+- toggle the SDK USB connection-mode setting only inside an explicit reversible experiment with pre-read, post-readback and OFF restore;
 - archive and process retrieved data locally.
 
 **Forbidden by project policy**
@@ -165,7 +185,7 @@ Current project work includes:
 - SDK-mode activation;
 - offline-recording mutation;
 - ECG start;
-- persistent device mutation.
+- arbitrary persistent device mutation outside the reviewed USB connection-mode gate.
 
 See [`docs/SAFETY.md`](docs/SAFETY.md).
 
@@ -177,19 +197,27 @@ See [`docs/SAFETY.md`](docs/SAFETY.md).
 
 See [`docs/RESEARCH.md`](docs/RESEARCH.md).
 
+### Verified USB research findings
+
+The current tested device exposes a software-gated USB data path. When enabled, Windows observes `VID_0DA4:PID_0014` as a composite device with one CDC ACM interface bound to `usbser`. Real-device testing verified Polar PFTP framing over that serial transport and a fixed read-only `GET /DEVICE.BPB` transaction. Directory-only reads then mapped the root, `/U/`, and `/U/0/` one level at a time.
+
+The exact USB bus descriptor product string and the `DEVICE.BPB` model name are different identifiers and are documented as separate layers rather than treated as interchangeable product names.
+
 ## Roadmap
 
 ```text
 V5-A3   ✅ Versioned derived layer + local research index
   ↓
-V5-B1   ◉ RAW inventory resilience + differential research index
+V5-B1   ✅ A3.D2 historical coverage protection + restart recovery + verified build
+  ↓
+USB-R5C ✅ Software gate + CDC ACM + PFTP + bounded read-only directory mapping
   ↓
 V5-B    ○ 7 / 30 / 90-day analytics + personal baseline
   ↓
 V5-C    ○ explainable baseline alerts / health intelligence
 ```
 
-Next focus: make RAW inventory failure **stage-isolated and recoverable**, then correlate changing RAW paths with semantic changes before considering any expansion of research scope.
+Next focus: continue bounded, read-only evidence collection where it directly improves semantic understanding, while progressing V5-B longitudinal analytics. USB work remains fixed-path, non-recursive and mutation-restricted.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
