@@ -1,3 +1,4 @@
+<!-- JOJI Polar Bridge V5-A3 — published 2026-08-10 -->
 <div align="center">
   <img src="assets/hero.svg" alt="JOJI Polar Bridge" width="100%" />
 
