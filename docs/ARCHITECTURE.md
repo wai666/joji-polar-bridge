@@ -1,5 +1,10 @@
 # Architecture
 
+**English** · [简体中文](ARCHITECTURE_CN.md)
+
+> [!NOTE]
+> This document describes JOJI's implemented/project architecture. It does not define Polar's internal architecture.
+
 ## Design goal
 
 JOJI turns device and SDK observations into a durable local data model without collapsing raw evidence, canonical values, and derived analytics into one mutable record.

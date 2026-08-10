@@ -1,5 +1,10 @@
 # Roadmap
 
+**English** · [简体中文](ROADMAP_CN.md)
+
+> [!NOTE]
+> Items below are **planned work**, not claims that the features already exist or have been validated.
+
 ## V5-B1 — RAW inventory resilience + differential index
 
 Planned:

@@ -1,5 +1,10 @@
 # Safety boundary
 
+**English** · [简体中文](SAFETY_CN.md)
+
+> [!IMPORTANT]
+> **Policy:** the rules below are JOJI-imposed safety constraints for this research project. They are not presented as Polar requirements.
+
 The project treats the existing Polar Loop as a live personal device, not a disposable test target.
 
 ## Invariants

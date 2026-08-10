@@ -4,9 +4,11 @@
 
   <br/>
 
-  **把 Polar Loop Gen 2 的设备数据，变成可验证、可追溯、可长期保留的本地健康数据。**
+  **Turn Polar Loop Gen 2 device data into verifiable, traceable, durable local health data.**
 
   *A privacy-first local health data bridge and research platform for Polar Loop Gen 2.*
+
+  **English** · [简体中文](README_CN.md)
 
   ![Platform](https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white)
   ![SDK](https://img.shields.io/badge/Polar%20BLE%20SDK-8.1.0-00A6CE)
@@ -20,38 +22,54 @@
 
 ## What is JOJI?
 
-**JOJI Polar Bridge** 是一个面向 **Polar Loop Gen 2** 的 Android 本地数据桥与研究平台。项目的重点不是“做另一个同步界面”，而是建立一个能够长期演进的数据层：
+**JOJI Polar Bridge** is an Android local data bridge and research platform for **Polar Loop Gen 2**. The goal is not to build another sync screen, but a durable data layer that can evolve without losing provenance:
 
-- 通过官方 **Polar BLE SDK 8.1.0** 获取可公开调用的活动、心率、PPI、睡眠、Nightly Recharge、皮温等数据；
-- 对经过审计白名单允许的设备文件做只读归档，并用 SHA-256 建立内容寻址历史；
-- 将 SDK 原始语义记录、RAW 文件和 Joji 自己计算的 Derived 指标严格分层；
-- 在重复同步中识别 **真正变化的数据** 与 **完全重复的数据**；
-- 保留算法版本和 source fingerprint，使历史结果可以重新计算、比较和追溯；
-- 对连接、权限边界和失败恢复保留完整 evidence，而不是隐藏异常。
+- read supported activity, heart-rate, PPI, sleep, Nightly Recharge, skin-temperature and related data through **Polar BLE SDK 8.1.0**;
+- archive reviewed read-only device artifacts with SHA-256 content identities;
+- keep original SDK semantics, RAW artifacts and JOJI-derived metrics in separate layers;
+- distinguish genuinely changed data from exact repeats during incremental sync;
+- retain algorithm versions and source fingerprints so derived history can be recomputed and compared;
+- preserve evidence for connection behavior, permission boundaries and recovery paths instead of hiding failures.
 
+> [!IMPORTANT]
 > This repository is an independent research project and is **not affiliated with or endorsed by Polar Electro**.
+
+## Claim labels
+
+Technical statements use explicit scope labels:
+
+| Label | Meaning |
+|---|---|
+| **Verified** | Supported by this project's recorded build, test or real-device evidence for the stated scope. |
+| **Observation** | Directly observed during experiments, but not treated as a vendor guarantee or universal behavior. |
+| **Hypothesis** | A working interpretation that still requires additional controlled testing. |
+| **Policy** | A JOJI-imposed engineering or safety rule; not a claim about Polar's requirements. |
+
+See [`docs/RESEARCH.md`](docs/RESEARCH.md) for the research-specific annotations.
 
 ## Current milestone — V5-A3
 
-当前稳定里程碑为 **V5-A3 / A3.D1**。
+**Verified — project validation scope:** V5-A3 / A3.D1 is the current sealed project milestone.
 
-| Area | Status | Notes |
+| Area | Status | Scope / notes |
 |---|---:|---|
 | Windows Android build | ✅ PASS | Kotlin compile, unit tests, lint, assemble, safety/privacy gates |
 | Local persistence | ✅ PASS | SQLite + app-private RAW archive |
 | Schema migration | ✅ PASS | explicit `v1 → v2` migration |
-| Incremental sync / dedup | ✅ PASS | logical-key + payload SHA-256 |
+| Incremental sync / dedup | ✅ PASS | logical key + payload SHA-256 |
 | Derived versioning | ✅ PASS | algorithm version + source fingerprint |
-| Manual recompute idempotency | ✅ PASS | unchanged inputs produce duplicates, not new rows |
-| Safe release | ✅ PASS | successful sessions end with callback-confirmed disconnect |
-| Persistent device writes | **0** | mutation APIs remain forbidden |
-| Known transient | ⚠️ tracked | RAW inventory protobuf parse can fail transiently |
+| Manual recompute idempotency | ✅ PASS | unchanged inputs deduplicate instead of creating new rows |
+| Safe release | ✅ PASS | successful validated sessions end with callback-confirmed disconnect |
+| Persistent device writes | **0** | mutation APIs remain forbidden by project policy |
+| Known transient | ⚠️ tracked | RAW inventory protobuf parsing has failed transiently in recorded evidence |
 
-Latest sealed APK SHA-256:
+Latest sealed APK SHA-256 recorded by the project:
 
 ```text
 b978ed1ceade315586b6c298eefa66b2912d677292af47021dcc3d33141672c7
 ```
+
+Detailed validation status: [`docs/BUILD_STATUS.md`](docs/BUILD_STATUS.md)
 
 ## Architecture
 
@@ -78,38 +96,38 @@ flowchart LR
 
 1. **L0 Evidence** — immutable RAW artifacts and original SDK payloads.
 2. **L1 Canonical** — normalized records with explicit source authority and freshness.
-3. **L2 Derived** — transparent, recomputable Joji metrics; never overwrites source data.
+3. **L2 Derived** — transparent, recomputable JOJI metrics that never overwrite source data.
 4. **L3 Presentation** — dashboard, health views, history and trends.
 
-This separation is deliberate: **derived values are never treated as raw truth.**
+**Design rule:** derived values are never treated as raw truth.
+
+More detail: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
 ## Real-device validation highlights
 
-A3 real-device evidence has validated two important properties:
+### Verified — recompute idempotency
 
-### 1. Recompute is idempotent
-
-An initial A3.D1 recompute created four derived records. Repeating manual recompute against unchanged source data produced:
+Within the recorded A3 real-device validation set, an initial `A3.D1` recompute created four derived records. Repeating manual recompute against unchanged source data produced:
 
 ```text
 new=0
 duplicate=4
 ```
 
-### 2. Changed source data creates a new version
+### Verified — changed source creates a new derived version
 
-After a later successful sync changed part of the underlying dataset, A3.D1 produced:
+After a later successful sync changed part of the underlying dataset, the recorded A3.D1 recompute produced:
 
 ```text
 new=1
 duplicate=3
 ```
 
-That is the intended versioning model: **change creates history; no-change stays deduplicated.**
+For this implementation and validation set, the intended rule holds: **change creates history; no-change stays deduplicated.**
 
 ## Supported semantic domains
 
-Current real-device work covers:
+Current project work includes:
 
 - Steps
 - Activity samples
@@ -122,31 +140,29 @@ Current real-device work covers:
 - Sleep
 - Nightly Recharge
 - Skin temperature
-- Training references / sessions (empty is treated as a valid current state)
-- SpO₂ tests (empty is treated as a valid current state)
-
-More detail: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- Training references / sessions (an empty result is treated as a valid current state)
+- SpO₂ tests (an empty result is treated as a valid current state)
 
 ## Safety model
 
-JOJI intentionally keeps a narrow device-side safety boundary.
+**Policy:** JOJI intentionally keeps a narrow device-side safety boundary.
 
-**Allowed**
+**Allowed by project policy**
 
 - reuse the existing Android BLE bond;
 - read supported SDK health/history APIs;
 - start/stop approved online PMD streams;
 - perform reviewed read-only file retrieval through the existing whitelist;
-- archive and process data locally.
+- archive and process retrieved data locally.
 
 **Forbidden by project policy**
 
-- `readFile` executable use;
+- executable use of SDK `readFile`;
 - file write/delete operations;
-- log configuration mutation;
+- log-configuration mutation;
 - bond creation/removal;
-- factory reset / firmware operations;
-- SDK mode activation;
+- factory reset or firmware operations;
+- SDK-mode activation;
 - offline-recording mutation;
 - ECG start;
 - persistent device mutation.
@@ -155,9 +171,9 @@ See [`docs/SAFETY.md`](docs/SAFETY.md).
 
 ## Research findings
 
-The project has also investigated device-side data lifecycles and Polar Flow interaction. One important observation is that different device datasets appear to have different lifecycles: some HR/PPI/AUTOS/sleep-intermediate data behaves like rolling or consumable sync queues, while activity summaries and history indexes behave differently.
+**Observation:** differential experiments indicate that device-side datasets do not all follow the same lifecycle. In the current evidence set, some HR/PPI/AUTOS/sleep-intermediate artifacts changed or rolled across sync windows while activity summaries and history/index artifacts behaved differently.
 
-These findings are treated as **evidence-backed research hypotheses**, not undocumented vendor guarantees.
+**Hypothesis:** some of these datasets may behave like rolling or consumable sync queues. This remains a research interpretation, **not an undocumented vendor guarantee**.
 
 See [`docs/RESEARCH.md`](docs/RESEARCH.md).
 
@@ -173,7 +189,7 @@ V5-B    ○ 7 / 30 / 90-day analytics + personal baseline
 V5-C    ○ explainable baseline alerts / health intelligence
 ```
 
-Next focus: make RAW inventory failure **stage-isolated and recoverable**, then correlate changing RAW paths with semantic changes instead of blindly expanding file access.
+Next focus: make RAW inventory failure **stage-isolated and recoverable**, then correlate changing RAW paths with semantic changes before considering any expansion of research scope.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
@@ -188,14 +204,14 @@ The public repository intentionally excludes:
 - app-private RAW payloads;
 - user-specific sync history.
 
-Public documentation contains only sanitized engineering facts and aggregated validation results.
+Public documentation contains sanitized engineering facts and aggregated validation results only.
 
 ## Repository status
 
-This is an actively developed personal research project. The repository currently publishes the **architecture, validation model, safety policy and research roadmap**. Source publication can be staged separately after the private development tree is scrubbed and packaged for public release.
+This is an actively developed personal research project. The public repository currently publishes the **architecture, validation model, safety policy and research roadmap**. Application source code is not part of this public package at this stage.
 
 ---
 
 <div align="center">
-  <sub>Built around evidence, reproducibility, and a strict no-device-mutation boundary.</sub>
+  <sub>Built around evidence, reproducibility, explicit claim scope, and a strict no-device-mutation boundary.</sub>
 </div>
