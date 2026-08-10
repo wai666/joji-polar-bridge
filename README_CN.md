@@ -1,4 +1,4 @@
-<!-- JOJI Polar Bridge V5-B1 / USB-R5C — updated 2026-08-10 -->
+<!-- JOJI Polar Bridge V5-B1 / USB-R5D — updated 2026-08-10 -->
 <div align="center">
   <img src="assets/hero.svg" alt="JOJI Polar Bridge" width="100%" />
 
@@ -193,6 +193,8 @@ duplicate=3
 
 USB bus descriptor 的 product string 与 `DEVICE.BPB` 内部 model name 属于不同层级标识，文档明确区分，不再混用。
 
+详细证据：[`research/usb/USB_EVIDENCE_20260810_CN.md`](research/usb/USB_EVIDENCE_20260810_CN.md)
+
 ## 路线图
 
 ```text
@@ -200,7 +202,7 @@ V5-A3   ✅ 版本化 Derived 层 + 本地研究索引
   ↓
 V5-B1   ✅ A3.D2 历史 coverage 保护 + restart recovery + verified build
   ↓
-USB-R5C ✅ Software gate + CDC ACM + PFTP + 受控只读目录映射
+USB-R5D ✅ Software gate + CDC ACM + PFTP + 受控只读目录映射（含每日目录）
   ↓
 V5-B    ○ 7 / 30 / 90 天分析 + 个人基线
   ↓

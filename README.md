@@ -1,4 +1,4 @@
-<!-- JOJI Polar Bridge V5-B1 / USB-R5C — updated 2026-08-10 -->
+<!-- JOJI Polar Bridge V5-B1 / USB-R5D — updated 2026-08-10 -->
 <div align="center">
   <img src="assets/hero.svg" alt="JOJI Polar Bridge" width="100%" />
 
@@ -203,6 +203,8 @@ The current tested device exposes a software-gated USB data path. When enabled, 
 
 The exact USB bus descriptor product string and the `DEVICE.BPB` model name are different identifiers and are documented as separate layers rather than treated as interchangeable product names.
 
+Detailed evidence: [`research/usb/USB_EVIDENCE_20260810.md`](research/usb/USB_EVIDENCE_20260810.md)
+
 ## Roadmap
 
 ```text
@@ -210,7 +212,7 @@ V5-A3   ✅ Versioned derived layer + local research index
   ↓
 V5-B1   ✅ A3.D2 historical coverage protection + restart recovery + verified build
   ↓
-USB-R5C ✅ Software gate + CDC ACM + PFTP + bounded read-only directory mapping
+USB-R5D ✅ Software gate + CDC ACM + PFTP + bounded read-only directory mapping including daily directory
   ↓
 V5-B    ○ 7 / 30 / 90-day analytics + personal baseline
   ↓

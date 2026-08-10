@@ -15,15 +15,17 @@
 - stale local `RUNNING` sessions recover as `INTERRUPTED_RESTART`;
 - direct Java 21 compile/test/lint/assemble validation is PASS.
 
-## USB research track — R5C
+## USB research track — R5D
 
 **Verified 2026-08-10:**
 
 - software-gated Windows USB enumeration;
 - `VID_0DA4:PID_0014` CDC ACM interface bound to `usbser`;
 - Polar PFTP real-device read-only `GET /DEVICE.BPB` over USB;
-- bounded single-level directory listings for `/`, `/U/`, `/U/0/`;
+- bounded single-level directory listings for `/`, `/U/`, `/U/0/`, `/U/0/<date>/`;
 - no firmware operation and no device-file mutation.
+
+Detailed evidence: [`../research/usb/USB_EVIDENCE_20260810.md`](../research/usb/USB_EVIDENCE_20260810.md)
 
 Next USB work remains fixed-path, non-recursive and read-only unless a new safety gate is reviewed.
 

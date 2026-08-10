@@ -42,8 +42,10 @@
 
 **Verified / 已验证。** 通过 CDC ACM serial transport，以 115200 8N1 + RTS/CTS 执行固定只读 Polar PFTP `GET /DEVICE.BPB` 成功，返回 protobuf 与当前测试 Loop Gen 2 的固件/型号系列一致。公开仓库不发布个人 device ID 等用户标识。
 
-**Verified / 已验证 — 受控 filesystem mapping。** 仅使用 directory listing 的 PFTP read，已经成功确认 `/`、`/U/`、`/U/0/`。`/U/0/` 中观察到 date-shaped directories，以及 `AUTOS/`、`DGOAL/`、`NR/`、`SLEEP/`、`SPROF/`、`S/`、`TL/` 和用户 metadata 条目。公开文档不会发布用户专属日期名或标识。
+**Verified / 已验证 — 受控 filesystem mapping。** 仅使用 directory listing 的 PFTP read，已经成功确认 `/`、`/U/`、`/U/0/`、`/U/0/<日期>/`。`/U/0/` 中观察到 date-shaped directories，以及 `AUTOS/`、`DGOAL/`、`NR/`、`SLEEP/`、`SPROF/`、`S/`、`TL/` 和用户 metadata 条目。单个每日目录 listing 确认了 `SKINCONT/` 和 `SKINTEMP/` 子目录。公开文档不会发布用户专属日期名或标识。
 
 **Observation / 观察。** Windows USB bus descriptor product string 与 `DEVICE.BPB` 内部 model name 是不同层级的标识。JOJI 将其分别记录，不再假设二者可互换。
 
 **Policy / 策略。** USB 工作默认继续保持 fixed-path + read-only。未经过新的 reviewed gate，不允许目录递归、任意文件读取、driver replacement、DFU、firmware write、raw vendor-command exploration 或 device-file mutation。本分支唯一实际执行过的 device-side setting mutation 是专用、可逆的 USB connection-mode toggle，并要求 pre-read、即时 readback 与 OFF restore。
+
+详细证据：[`../research/usb/USB_EVIDENCE_20260810_CN.md`](../research/usb/USB_EVIDENCE_20260810_CN.md)
