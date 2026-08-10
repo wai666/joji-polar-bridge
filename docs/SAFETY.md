@@ -19,7 +19,7 @@ The project treats the existing Polar Loop as a live personal device, not a disp
 - Do not execute SDK `readFile`.
 - Do not call device file write/delete APIs.
 - Do not change device log configuration.
-- Do not send manual/raw PSFTP/PFTP mutation commands.
+- Do not send manual/raw device-file mutation commands.
 - Preserve the sealed V4.3/R4 connection recovery state machine unless a demonstrated defect requires a reviewed change.
 
 ## File access

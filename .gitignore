@@ -11,15 +11,6 @@ local.properties
 *.iml
 .vscode/
 
-# Private JOJI evidence
-JOJI_LIVE_EVIDENCE*.txt
-JOJI_V5_LOCAL_HISTORY*.json
-JOJI_*HANDOFF*.zip
-JOJI_*RESEARCH*.zip
-raw/
-evidence/
-private/
-
 # OS
 .DS_Store
 Thumbs.db

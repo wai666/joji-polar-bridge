@@ -28,7 +28,7 @@
   </g>
   <g transform="translate(316 88)">
     <text x="0" y="48" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="56" font-weight="700" fill="#f6fbff">JOJI Polar Bridge</text>
-    <text x="0" y="94" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" fill="#9db4cf">Privacy-first local health data bridge &amp; reverse-research platform</text>
+    <text x="0" y="94" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" fill="#9db4cf">Privacy-first local health data bridge &amp; device-data research platform</text>
     <text x="0" y="135" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" fill="#73e9ca">Polar Loop Gen 2 · Android · Polar BLE SDK 8.1.0 · Local-first</text>
     <g transform="translate(0 166)" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">
       <rect width="164" height="42" rx="21" fill="#12263a" stroke="#2d9fb7"/><text x="82" y="27" text-anchor="middle" fill="#dffaff">A3.D1 Derived Layer</text>

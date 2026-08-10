@@ -7,7 +7,7 @@
 
 ## Device family
 
-**Observation.** The current Polar Loop Gen 2 research target presents identifiers associated in this project with the newer TRIUMPH / `Polar_INW6F` platform rather than the legacy LOOP / LOOP2 family.
+**Observation.** The current Polar Loop Gen 2 research target presents identifiers associated in this project with a newer device platform observed by JOJI rather than the legacy LOOP / LOOP2 family.
 
 **Hypothesis.** That platform distinction may explain why behavior inferred from older Loop generations does not always transfer cleanly. It should not be treated as a vendor compatibility statement unless independently documented.
 

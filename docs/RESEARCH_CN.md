@@ -7,7 +7,7 @@
 
 ## 设备家族
 
-**Observation / 观察。** 当前 Polar Loop Gen 2 研究对象在本项目记录中呈现出与较新 TRIUMPH / `Polar_INW6F` 平台相关的标识，而不是旧 LOOP / LOOP2 家族。
+**Observation / 观察。** 当前 Polar Loop Gen 2 研究对象在本项目记录中呈现出与 JOJI 观察到的较新设备平台相关的标识，而不是旧 LOOP / LOOP2 家族。
 
 **Hypothesis / 假设。** 这种平台差异可能解释为什么旧 Loop 代际的行为不能直接套用到当前设备。除非有独立官方文档支持，否则不应把它写成厂商兼容性声明。
 

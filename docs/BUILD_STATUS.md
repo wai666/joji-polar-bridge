@@ -4,7 +4,7 @@
 
 Windows runner:
 
-`JOJI_V5_A3_R3_UNIT_TEST_LONG_ASSERT_FIX_BUILD_20260810_01`
+Validation run: 2026-08-10
 
 Result: **PASS**
 

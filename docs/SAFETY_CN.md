@@ -19,7 +19,7 @@
 - 不执行 SDK `readFile`。
 - 不调用设备文件 write/delete API。
 - 不修改设备 log configuration。
-- 不发送手工/raw PSFTP/PFTP mutation 命令。
+- 不发送手工/raw 设备文件修改命令。
 - 除非确认存在缺陷且经过 review，否则保持封存的 V4.3/R4 connection recovery state machine。
 
 ## 文件访问
