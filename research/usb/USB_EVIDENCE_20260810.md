@@ -19,6 +19,7 @@
 | R5E | `/U/0/<date>/SKINTEMP/` | PFTP GET directory | STOP | — | error 103: NO_SUCH_FILE_OR_DIRECTORY |
 | R5F | `/U/0/<date>/` | PFTP GET directory | STOP | — | error 103: NO_SUCH_FILE_OR_DIRECTORY |
 | R5G | `/U/0/` | PFTP GET directory | PASS | 183 | 14 entries |
+| R5I | `/U/0/<current-date>/` | PFTP GET directory | PASS | 36 | 3 entries |
 
 ## Transport verified
 
@@ -49,7 +50,9 @@ In an earlier research window: 2 entries — `SKINCONT/`, `SKINTEMP/`. In a late
 
 **R5G (PASS):** a re-listing of `/U/0/` confirmed that the earlier date entry was absent while a later date entry was present. All non-date entries were unchanged.
 
-**Status:** the date-shaped directory index under `/U/0/` exhibits dynamic membership. The earlier directory's disappearance from the index correlates with its path becoming unreachable. The retention/lifecycle mechanism remains unresolved and no specific mechanism (rotation, consumption, cleanup, FIFO) is claimed as confirmed.
+**R5I (PASS):** a single-level listing of one currently indexed date-shaped directory returned 3 entries: `ACT/`, `DSUM/`, `SKINCONT/`. An earlier completed-day listing (R5D) had returned `SKINCONT/`, `SKINTEMP/`. The entry-name sets differ between the observed current-day and completed-day samples. `SKINCONT/` was present in both. The structural variation is observed without claiming a universal schema or lifecycle mechanism.
+
+**Status:** the date-shaped directory index under `/U/0/` exhibits dynamic membership. Individual date directories show single-level structural variation between observed samples. The retention/lifecycle mechanism remains unresolved and no specific mechanism (rotation, consumption, cleanup, FIFO) is claimed as confirmed.
 
 ## Safety invariants maintained
 

@@ -19,6 +19,7 @@
 | R5E | `/U/0/<日期>/SKINTEMP/` | PFTP GET 目录 | STOP | — | error 103: NO_SUCH_FILE_OR_DIRECTORY |
 | R5F | `/U/0/<日期>/` | PFTP GET 目录 | STOP | — | error 103: NO_SUCH_FILE_OR_DIRECTORY |
 | R5G | `/U/0/` | PFTP GET 目录 | PASS | 183 | 14 条目 |
+| R5I | `/U/0/<当前日期>/` | PFTP GET 目录 | PASS | 36 | 3 条目 |
 
 ## 已验证的 Transport
 
@@ -49,7 +50,9 @@
 
 **R5G (PASS)：** 重新 listing `/U/0/` 确认较早日期条目已不在索引中，较晚日期条目已出现。所有非日期条目未变。
 
-**状态：** `/U/0/` 下日期状目录索引表现出动态成员关系。较早目录从索引中消失与其路径变为不可达在时序上相关。保留/生命周期机制仍未解决，不声称任何特定机制（rotation、consumption、cleanup、FIFO）已确认。
+**R5I (PASS)：** 对当前索引中的一个日期目录进行单层 listing，返回 3 条目：`ACT/`、`DSUM/`、`SKINCONT/`。此前已完成日的 listing（R5D）返回 `SKINCONT/`、`SKINTEMP/`。当前日与已完成日样本的 entry-name set 不同。`SKINCONT/` 在两个样本中均出现。观察到结构变化，但不声称存在通用 schema 或生命周期机制。
+
+**状态：** `/U/0/` 下日期状目录索引表现出动态成员关系。单个日期目录在观察样本间呈现单层结构变化。保留/生命周期机制仍未解决，不声称任何特定机制（rotation、consumption、cleanup、FIFO）已确认。
 
 ## 维持的安全不变量
 
