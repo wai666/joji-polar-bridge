@@ -1,4 +1,4 @@
-<!-- JOJI Polar Bridge V5-B1 / USB-R5I — updated 2026-08-11 -->
+<!-- JOJI Polar Bridge — Phase I Finalized 2026-08-11 -->
 <div align="center">
   <img src="assets/hero.svg" alt="JOJI Polar Bridge" width="100%" />
 

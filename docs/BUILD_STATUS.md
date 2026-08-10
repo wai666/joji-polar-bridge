@@ -1,66 +1,45 @@
 # Build & validation status
 
-## V5-B1 / A3.D2
-
-Validation date: 2026-08-10
+## Phase I — Final Candidate (2026-08-11)
 
 Result: **PASS**
 
-### Source snapshot gate
+### Changes
+- 8 evidence-supported implementation items (Phase H audit)
+- Passive USB PFTP evidence model
+- Device metadata (DEVICE.BPB fields)
+- SKIN_CONTACT HistoricalKind
+- Platform identity documentation (INW5T vs INW6F)
+- Date lifecycle awareness annotations
+- Safety policy USB gate documentation
 
-- source snapshot created before B1 implementation;
-- source-unchanged proof: **PASS**;
-- snapshot file count: **49**;
-- snapshot SHA-256:
+### Validated gates
 
-```text
-292135092723b33d4f9e84b6f9899f792b502868e34de46d455b4b2901776d9a
-```
-
-### B1 implementation scope
-
-- aggregate persisted 24/7 HR semantic versions by stable group key;
-- select the richer payload within a group, with newer data as tie-breaker;
-- derive source fingerprints only from contributing payload SHA-256 values;
-- protect historical coverage from regression when a newer payload is sparse;
-- convert stale `RUNNING` sessions to `INTERRUPTED_RESTART` locally;
-- keep PPI aggregation behavior intact.
-
-Offline replay evidence for the recorded dataset increased selected HR coverage from a sparse latest payload to the richer persisted history without modifying device data.
-
-### Direct Java 21 validation
-
-Validated gates:
-
-- source preflight;
-- Java 21 runtime and compiler;
-- Gradle 8.12;
 - Kotlin compilation;
-- Java compilation;
+- Java compilation (JDK 21);
 - unit tests;
 - Android lint;
 - APK assemble;
-- source post-build proof.
+- frozen source unchanged;
+- privacy scan (0 new private identifiers);
+- static safety scan (0 new executable device operations);
+- proprietary-code audit.
+
+### Phase I APK SHA-256
 
 ```text
-SOURCE_PREFLIGHT=PASS
-JAVA21=PASS
-JAVAC21=PASS
-GRADLE_VERSION=PASS
-KOTLIN_COMPILE=PASS
-JAVA_COMPILE=PASS
-UNIT_TEST=PASS
-LINT=PASS
-ASSEMBLE=PASS
-SOURCE_POSTBUILD=PASS
-RESULT=PASS
-DEVICE_CONTACTED=NO
+8b9c1c75e4a561364846cc3eaba224ccd8c5574d6ca910d5aec2f2b552f8798c
 ```
 
-Latest verified APK SHA-256:
+### Prior B1 APK SHA-256 (for reference)
 
 ```text
 baa9e3c42a7bc6fbcadcf5af92755d75443e3b2f35774e915be4c7685a264b97
 ```
+
+### Previous builds
+
+#### V5-B1 / A3.D2 (2026-08-10)
+All gates PASS. Snapshot: 49 files, SHA-256: 29213509...
 
 The public project intentionally does not publish the private APK, device identifiers, personal health payloads or full evidence archive.
