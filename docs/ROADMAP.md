@@ -5,6 +5,56 @@
 > [!NOTE]
 > Items below are **planned work**, not claims that the features already exist or have been validated.
 
+## P0 next decisive experiment — adjacent A/B
+
+Design:
+
+**A0**
+
+- Flow disabled
+- network OFF
+- JOJI sync=0
+- PRE_SYNC first-writer LIST
+- require: `SLEEPSCO=ABSENT`
+
+Then immediately adjacent:
+
+**B**
+
+- network remains OFF
+- enable Flow
+- foreground Flow
+- no manual sync
+- bounded local-only exposure
+
+Then:
+
+- disable Flow
+- wait for ACL=N
+
+**A1**
+
+- JOJI first-writer LIST
+- sync=0
+
+Only A0 ABSENT → Flow-local exposure → A1 PRESENT permits the upgrade:
+
+```text
+ABSENT_TO_PRESENT_DURING_FLOW_LOCAL_EXPOSURE=CONFIRMED
+NETWORK_PATH_DURING_TRANSITION=EXCLUDED
+```
+
+Even then:
+
+```text
+FLOW_LOCAL_FINAL_SCORE_CALCULATOR=UNPROVEN
+```
+
+and the design must still distinguish:
+
+- Flow calculates/writes the score
+- vs. Flow triggers device-firmware calculation.
+
 ## V5-B1 — RAW inventory resilience + differential index
 
 Planned:

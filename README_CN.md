@@ -71,6 +71,58 @@ b978ed1ceade315586b6c298eefa66b2912d677292af47021dcc3d33141672c7
 
 详细验证状态：[`docs/BUILD_STATUS.md`](docs/BUILD_STATUS.md)
 
+## 研究里程碑 — Research Agent 0.7.0 / P0 First-Writer
+
+**研究构建（本项目验证）：**
+
+```text
+versionName: 0.7.0-first-writer-observer
+versionCode: 14
+APK SHA-256: 1c9a2a77adcfb91db8b56ff83d01043449df29f5be510e12c1dc9335143ed88a
+```
+
+**验证结果：**
+
+- 301 个单元测试 PASS
+- 静态安全扫描 PASS
+- USB-R3 安全扫描 PASS
+- PC Research Agent CLI self-test PASS
+
+**已验证的 Research Agent 能力：**
+
+- ADB/run-as 应用私有命令桥
+- session 隔离
+- commandId 幂等
+- 受控 sync
+- 受控 post-sync reconnect
+- 动态只读 PFTP LIST
+- 历史只读 PFTP GET
+- RAW artifact 保全
+- 手机侧 SHA-256
+- 二进制安全 PC pull
+- PC 侧 SHA-256
+- 手机/PC 字节同一性校验
+- release → export → FINALIZED
+- 确定性 manifest 校验
+
+**设备写入边界（不变）：**
+
+```text
+PFTP_WRITE=0
+PFTP_DELETE=0
+BOND_MUTATION=0
+```
+
+**开放 P0 研究问题：**`SLEEPSCO.BPB` 首次由谁产生？
+
+- 设备 firmware
+- Polar Flow 本地处理
+- 远程/网络路径
+
+当前结论：`P0_DEVICE_VS_FLOW_LOCAL=UNRESOLVED`。
+
+详情：[`docs/RESEARCH_CN.md`](docs/RESEARCH_CN.md) · [`docs/P0_FIRST_WRITER_2026-08-15_CN.md`](docs/P0_FIRST_WRITER_2026-08-15_CN.md)
+
 ## 架构
 
 ```mermaid
