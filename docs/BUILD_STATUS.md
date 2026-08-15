@@ -1,5 +1,42 @@
 # Build & validation status
 
+## Research Agent 0.7.0 — 2026-08-15
+
+Research build:
+
+```text
+versionName=0.7.0-first-writer-observer
+versionCode=14
+APK SHA-256: 1c9a2a77adcfb91db8b56ff83d01043449df29f5be510e12c1dc9335143ed88a
+```
+
+Build/test status:
+
+- JDK 21 Android build PASS
+- 301 unit tests PASS
+- static safety scan PASS
+- USB-R3 safety scan PASS
+- PC CLI self-test PASS
+
+Evidence integrity:
+
+- sessionId binding
+- cross-session contamination protection
+- commandId idempotency
+- RELEASED → FINALIZED lifecycle
+- post-finalization mutation denied
+- deterministic manifest
+
+Real-device validation:
+
+```text
+Historical Raw GET:             PASS
+RAW_BYTES_PRESERVED_END_TO_END: CONFIRMED
+PHONE_PC_BYTE_IDENTITY:         CONFIRMED
+```
+
+Known tested SLEEPSCO.BPB size: 172 bytes
+
 ## V5-A3 R3
 
 Windows runner:

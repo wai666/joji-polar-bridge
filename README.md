@@ -71,6 +71,58 @@ b978ed1ceade315586b6c298eefa66b2912d677292af47021dcc3d33141672c7
 
 Detailed validation status: [`docs/BUILD_STATUS.md`](docs/BUILD_STATUS.md)
 
+## Research milestone — Research Agent 0.7.0 / P0 First-Writer
+
+**Research build (validated by the project):**
+
+```text
+versionName: 0.7.0-first-writer-observer
+versionCode: 14
+APK SHA-256: 1c9a2a77adcfb91db8b56ff83d01043449df29f5be510e12c1dc9335143ed88a
+```
+
+**Validation:**
+
+- 301 unit tests PASS
+- static safety scan PASS
+- USB-R3 safety scan PASS
+- PC Research Agent CLI self-test PASS
+
+**Validated Research Agent capabilities:**
+
+- ADB/run-as app-private command bridge
+- session isolation
+- commandId idempotency
+- controlled sync
+- controlled post-sync reconnect
+- dynamic read-only PFTP LIST
+- historical read-only PFTP GET
+- RAW artifact preservation
+- phone-side SHA-256
+- binary-safe PC pull
+- PC-side SHA-256
+- phone/PC byte identity verification
+- release → export → FINALIZED
+- deterministic manifest verification
+
+**Device-mutation boundary (unchanged):**
+
+```text
+PFTP_WRITE=0
+PFTP_DELETE=0
+BOND_MUTATION=0
+```
+
+**Open P0 research question:** where is `SLEEPSCO.BPB` first produced?
+
+- device firmware
+- Polar Flow local processing
+- remote/network path
+
+Current conclusion: `P0_DEVICE_VS_FLOW_LOCAL=UNRESOLVED`.
+
+Details: [`docs/RESEARCH.md`](docs/RESEARCH.md) · [`docs/P0_FIRST_WRITER_2026-08-15.md`](docs/P0_FIRST_WRITER_2026-08-15.md)
+
 ## Architecture
 
 ```mermaid

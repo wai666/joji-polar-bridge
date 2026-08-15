@@ -1,5 +1,18 @@
 # Changelog
 
+## Research Agent 0.7.0 / P0 First-Writer — 2026-08-15
+
+- Research Agent architecture introduced.
+- Controlled post-sync reconnect.
+- Evidence-integrity lifecycle.
+- Historical raw GET verified.
+- Byte-preserving PC export verified.
+- First-writer observer introduced.
+- PRE/POST sync SLEEPSCO control.
+- Overnight device-only observation.
+- Flow-local offline exposure.
+- Causal interpretation corrected due missing adjacent PRE snapshot.
+
 ## V5-A3 — 2026-08-10
 
 - SQLite schema v2 with explicit v1→v2 migration.
